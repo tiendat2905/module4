@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/layout :: head">
+
+</head>
+<!-- Summer note -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+
+<body class="animsition" style="opacity:1">
+<div class="page-wrapper">
+    <!-- HEADER MOBILE-->
+    <th:block th:replace="/layout :: header-moblie"/>
+    <!-- END HEADER MOBILE-->
+
+    <!-- MENU SIDEBAR-->
+    <th:block th:replace="/layout :: menu-sidebar"/>
+    <!-- END MENU SIDEBAR-->
+
+    <!-- PAGE CONTAINER-->
+    <div class="page-container">
+        <!-- HEADER DESKTOP-->
+        <th:block th:replace="/layout :: header-desktop"/>
+        <!-- HEADER DESKTOP-->
+        <!-- MAIN CONTENT-->
+        <div class="main-content">
+            <div class="section__content section__content--p30">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <h3 class="title-5 m-b-35">Blog Manager</h3>
+                        </div>
+                        <div class="table-data__tool">
+                            <div class="table-data__tool-left">
+                                <a th:href="@{/blog/list}"
+                                   class="au-btn au-btn-icon au-btn--green au-btn--small"> <i
+                                        class="zmdi zmdi-collection-item"></i>list
+                                </a>
+
+                            </div>
+                            <div class="table-data__tool-right"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- FORM ADD-->
+                        <div class="col-12 col-md-12">
+                            <form id="form" th:action="@{/blog/update}" th:object="${blog}"
+                                  method="post" class="form-horizontal">
+                                <div class="card-header">
+                                    <strong>Add Blog</strong>
+                                </div>
+                                <div class="card-body card-block">
+                                    <input type="hidden" th:field="*{id}"/>
+                                    <div class="row form-group">
+                                        <div class="col col-md-3">
+                                            <label for="title" class=" form-control-label">Title</label>
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <input type="text" id="title" name="title" placeholder="Title"
+                                                   th:field="*{title}" required class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-3">
+                                            <label for="shortContent" class=" form-control-label">ShortContent</label>
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <textarea id="shortContent" name="shortContent" th:field="*{shortContent}"
+                                                      placeholder="ShortContent" row=4
+                                                      required class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-3">
+                                            <label for="fullContent" class=" form-control-label">Full
+                                                Content</label>
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <textarea name="fullContent" id="fullContent" rows="9"
+                                                      placeholder="Full Content" th:field="*{fullContent}"
+                                                      class="form-control">
+                                            </textarea>
+                                            <div id="check-summernote"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-3">
+                                            <label for="image" class=" form-control-label">ImageUrl</label>
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <input type="text" id="image" name="image" placeholder="ImageUrl"
+                                                   th:field="*{image}" required class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col col-md-3">
+                                            <label class=" form-control-label">Categoty</label>
+                                        </div>
+                                        <div class="col-12 col-md-9">
+                                            <select class="form-control" name="category"
+                                                    th:field="${blog.category.id}"
+                                                    required>
+                                                <option value="">Vui lòng chọn ...</option>
+                                                <option th:each="cat,rowstat : ${categories}"
+                                                        th:value="${cat.id}" th:utext="${cat.nameCategory}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-dot-circle-o"></i> Submit
+                                    </button>
+                                    <button type="reset" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-ban"></i> Reset
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="copyright">
+                                <p>
+                                    Copyright © 2018 Colorlib. All rights reserved. Template by <a
+                                        href="https://colorlib.com">Colorlib</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="/layout::block-script"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+
+    <script>
+        $('#fullContent').summernote({
+            tabsize: 2,
+            height: 100,
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['fontName', 'Josefin Sans'],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ]
+        });
+
+        $("#form").on('submit', function (e) {
+            if ($('#fullContent').summernote('isEmpty')) {
+                console.log("fill")
+                $("#check-summernote").html('contents is empty, fill it!');
+                e.preventDefault();
+            }
+            console.log("ok")
+        })
+    </script>
+</body>
+
+</html>
+<!-- end document-->
